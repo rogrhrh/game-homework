@@ -70,6 +70,10 @@ main ← feat/12-player-attack
 
 확인 후 한 번에 처리한다. 단계별로 나눠서 물어보지 않는다.
 
+### 문서 작업 예외
+
+`docs` 타입의 문서 작업(README, CONVENTION, PRODUCT 등 md 파일 수정)은 이슈를 생성하지 않고 main에 직접 푸시할 수 있다.
+
 ---
 
 
