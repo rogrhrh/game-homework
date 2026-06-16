@@ -64,15 +64,6 @@
 
 ---
 
-## Game
-
-| 메서드 | 경로 | 설명 | 인증 |
-|---|---|---|---|
-| GET | `/api/v1/games` | 게임 목록 조회 | 불필요 |
-| POST | `/api/v1/games` | 게임 등록 | 필요 |
-
----
-
 ## Routine
 
 | 메서드 | 경로 | 설명 | 인증 |
@@ -82,6 +73,7 @@
 | GET | `/api/v1/routines/{slug}` | 공개 루틴 상세 조회 | 불필요 |
 | PUT | `/api/v1/routines/{id}` | 루틴 수정 | 필요 (작성자) |
 | DELETE | `/api/v1/routines/{id}` | 루틴 삭제 | 필요 (작성자) |
+| GET | `/api/v1/routines/game-names?q=` | 게임명 자동완성 | 불필요 |
 
 ---
 

@@ -21,10 +21,13 @@ public class Routine extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long gameId;
+    private Long authorId;
 
     @Column(nullable = false)
-    private Long authorId;
+    private String gameName;
+
+    @Column(nullable = false)
+    private Integer dailyResetHour = 0;
 
     @Column(nullable = false)
     private String title;

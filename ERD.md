@@ -13,8 +13,6 @@ erDiagram
     User ||--o{ RoutineItemCheck : "체크"
     User ||--o{ PersonalAccessToken : "보유"
 
-    Game ||--o{ Routine : "포함"
-
     Routine ||--o{ RoutineTag : "태그"
     Routine ||--o{ RoutineItem : "구성"
     Routine ||--o{ RoutineSubscription : "구독됨"
@@ -39,24 +37,14 @@ erDiagram
 
 ---
 
-### Game
-
-| 필드 | 타입 | 설명 |
-|---|---|---|
-| id | Long | PK |
-| name | String | 게임명 |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
-
----
-
 ### Routine
 
 | 필드 | 타입 | 설명 |
 |---|---|---|
 | id | Long | PK |
-| gameId | Long | FK → Game |
 | authorId | Long | FK → User |
+| gameName | String | 게임명 (자유 입력, 자동완성 제공) |
+| dailyResetHour | Integer | 일일 초기화 시각 (기본값 0, 0-23) |
 | title | String | 루틴 제목 |
 | slug | String | 공유 링크용 식별자 (unique) |
 | description | String | 루틴 설명 (nullable) |
@@ -148,4 +136,6 @@ erDiagram
 - **반복 기준은 RoutineItem**: 하나의 루틴 안에 매일/매주/한 번만 하는 일이 섞일 수 있어, 반복 기준은 루틴 전체가 아니라 개별 아이템이 가진다.
 - **체크 상태 분리**: 여러 사용자가 같은 루틴을 구독할 수 있으므로, 체크 상태는 RoutineItem에 직접 저장하지 않고 사용자별 RoutineItemCheck로 분리한다.
 - **구독 우선**: MVP에서는 복사보다 구독을 우선 구현한다. 복사는 이후 개인 수정 기능으로 확장한다.
-- **MCP 통합**: MCP 서버는 별도 서비스로 분리하지 않고 같은 Spring Boot 앱에 통합한다. 서비스 레이어를 직접 호출하며, 인증은 PersonalAccessToken으로 처리한다.
+- **Game 엔티티 없음**: 루틴덱은 게임 정보 관리 서비스가 아니다. 게임명은 Routine에 문자열로 저장하고, 루틴 생성 시 기존 게임명을 자동완성으로 제안해 자연스러운 통일을 유도한다.
+- **dailyResetHour**: 게임마다 일일 초기화 시각이 다르므로(로스트아크 06:00, 원신 05:00 등) 루틴별로 설정할 수 있다. RoutineItemCheck의 기간 계산 시 이 값을 기준으로 한다.
+- **MCP 통합**: MCP 서버는 별도 서비스로 분리하지 않고 같은 Spring Boot 앱에 통합한다. prod에서는 OAuth 2.1, dev/test에서는 PAT로 인증한다.
