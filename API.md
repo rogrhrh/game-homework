@@ -7,10 +7,12 @@
 
 ## 인증
 
-| 인터페이스 | 방식 | 헤더 |
+| 환경 | 방식 | 비고 |
 |---|---|---|
-| 웹 API | JWT | `Authorization: Bearer <jwt>` |
-| MCP | PersonalAccessToken | `Authorization: Bearer <pat>` |
+| prod | OAuth 2.1 | 웹 API, MCP 모두 OAuth 통일 |
+| dev / test | PAT | MCP 테스트 편의를 위해 PAT 허용 |
+
+웹 API는 OAuth 액세스 토큰을 `Authorization: Bearer <token>` 헤더로 전달합니다.
 
 ---
 

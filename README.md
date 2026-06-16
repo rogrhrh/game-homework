@@ -50,6 +50,14 @@ Claude, ChatGPT, Cursor 같은 LLM 클라이언트가 MCP를 통해 루틴덱에
 "원신 일일 의뢰 끝냈어. 체크해줘."
 ```
 
+### ChatGPT
+
+1. ChatGPT 설정 → **앱** 이동
+2. 고급 설정에서 **개발자 모드** 활성화
+3. **앱 만들기**에서 MCP 서버 URL 입력
+   - MCP 서버 URL: `https://your-routinedeck-url/mcp`
+4. 채팅창에서 바로 사용 가능
+
 ### Claude Desktop
 
 `claude_desktop_config.json`에 추가하세요.
@@ -58,7 +66,7 @@ Claude, ChatGPT, Cursor 같은 LLM 클라이언트가 MCP를 통해 루틴덱에
 {
   "mcpServers": {
     "routinedeck": {
-      "url": "http://localhost:8080/mcp",
+      "url": "https://your-routinedeck-url/mcp",
       "headers": {
         "Authorization": "Bearer <your-pat>"
       }
@@ -75,7 +83,7 @@ Claude, ChatGPT, Cursor 같은 LLM 클라이언트가 MCP를 통해 루틴덱에
 {
   "mcpServers": {
     "routinedeck": {
-      "url": "http://localhost:8080/mcp",
+      "url": "https://your-routinedeck-url/mcp",
       "headers": {
         "Authorization": "Bearer <your-pat>"
       }

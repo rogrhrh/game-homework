@@ -17,10 +17,18 @@
 
 ## 인증
 
-MCP 클라이언트는 PersonalAccessToken(PAT)으로 인증합니다.
+### 프로덕션 (OAuth 2.1)
 
-1. 루틴덱 웹에서 `POST /api/v1/tokens`로 PAT 발급
-2. LLM 클라이언트 설정에 PAT 등록
+모든 MCP 클라이언트는 OAuth 2.1 플로우로 인증합니다. ChatGPT, Claude Desktop, Cursor 모두 OAuth를 지원합니다.
+
+Spring Authorization Server 기반으로 구현하며, PKCE 필수입니다.
+
+### 개발 / 테스트 (PAT)
+
+`dev`, `test` 프로파일에서는 PersonalAccessToken(PAT)으로 간편하게 인증할 수 있습니다. Claude Desktop으로 빠르게 연결해서 MCP 동작을 확인할 때 사용합니다.
+
+1. `POST /api/v1/tokens`로 PAT 발급
+2. Claude Desktop 설정에 PAT 등록
 3. MCP 요청 시 `Authorization: Bearer <pat>` 헤더로 전달
 
 ---
@@ -83,6 +91,14 @@ MCP를 통해 허용하지 않는 작업 목록입니다.
 
 ## 클라이언트 연결 예시
 
+### ChatGPT
+
+1. ChatGPT 설정 → **앱** 이동
+2. 고급 설정에서 **개발자 모드** 활성화
+3. **앱 만들기**에서 MCP 서버 URL 입력
+   - MCP 서버 URL: `https://your-routinedeck-url/mcp`
+4. 채팅창에서 바로 사용 가능
+
 ### Claude Desktop
 
 `claude_desktop_config.json`에 아래 내용을 추가합니다.
@@ -91,7 +107,7 @@ MCP를 통해 허용하지 않는 작업 목록입니다.
 {
   "mcpServers": {
     "routinedeck": {
-      "url": "http://localhost:8080/mcp",
+      "url": "https://your-routinedeck-url/mcp",
       "headers": {
         "Authorization": "Bearer <your-pat>"
       }
@@ -108,7 +124,7 @@ MCP를 통해 허용하지 않는 작업 목록입니다.
 {
   "mcpServers": {
     "routinedeck": {
-      "url": "http://localhost:8080/mcp",
+      "url": "https://your-routinedeck-url/mcp",
       "headers": {
         "Authorization": "Bearer <your-pat>"
       }
