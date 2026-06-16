@@ -45,6 +45,7 @@ erDiagram
 | authorId | Long | FK → User |
 | gameName | String | 게임명 (자유 입력, 자동완성 제공) |
 | dailyResetHour | Integer | 일일 초기화 시각 (기본값 0, 0-23) |
+| weeklyResetDayOfWeek | Integer | 주간 초기화 요일 (기본값 1=월요일, 1-7) |
 | title | String | 루틴 제목 |
 | slug | String | 공유 링크용 식별자 (unique) |
 | description | String | 루틴 설명 (nullable) |
@@ -52,6 +53,8 @@ erDiagram
 | createdAt | LocalDateTime | |
 | updatedAt | LocalDateTime | |
 | deletedAt | LocalDateTime | 소프트 삭제 |
+
+**Unique 제약**: `slug`
 
 ---
 
@@ -62,6 +65,8 @@ erDiagram
 | id | Long | PK |
 | routineId | Long | FK → Routine |
 | name | String | 태그명 (복귀, 뉴비, 이벤트 등) |
+
+**Unique 제약**: `(routineId, name)`
 
 ---
 
@@ -97,6 +102,8 @@ erDiagram
 | routineId | Long | FK → Routine |
 | createdAt | LocalDateTime | |
 
+**Unique 제약**: `(userId, routineId)`
+
 ---
 
 ### RoutineItemCheck
@@ -109,9 +116,11 @@ erDiagram
 | periodType | PeriodType | NONE / DAILY / WEEKLY / MONTHLY / EVENT |
 | periodStartDate | LocalDate | 기간 시작일 |
 | periodEndDate | LocalDate | 기간 종료일 |
-| checked | Boolean | 완료 여부 |
 | createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
+
+**Unique 제약**: `(userId, routineItemId, periodType, periodStartDate)`
+
+> 레코드 존재 = 체크 완료. 체크 해제는 레코드 삭제로 처리한다. `checked` 컬럼은 두지 않는다.
 
 ---
 

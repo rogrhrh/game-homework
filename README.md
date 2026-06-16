@@ -50,13 +50,14 @@ Claude, ChatGPT, Cursor 같은 LLM 클라이언트가 MCP를 통해 루틴덱에
 "원신 일일 의뢰 끝냈어. 체크해줘."
 ```
 
-### ChatGPT
+### ChatGPT (연동 예정)
+
+ChatGPT MCP 연동은 OAuth 2.1 구현 완료 후 지원 예정입니다.
 
 1. ChatGPT 설정 → **앱** 이동
 2. 고급 설정에서 **개발자 모드** 활성화
-3. **앱 만들기**에서 MCP 서버 URL 입력
-   - MCP 서버 URL: `https://your-routinedeck-url/mcp`
-4. 채팅창에서 바로 사용 가능
+3. **앱 만들기**에서 루틴덱 MCP 서버 URL 입력
+4. OAuth 인증 후 사용 가능
 
 ### Claude Desktop
 

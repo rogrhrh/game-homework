@@ -17,19 +17,17 @@
 
 ## 인증
 
-### 프로덕션 (OAuth 2.1)
+### MVP 1차 — PAT / JWT
 
-모든 MCP 클라이언트는 OAuth 2.1 플로우로 인증합니다. ChatGPT, Claude Desktop, Cursor 모두 OAuth를 지원합니다.
-
-Spring Authorization Server 기반으로 구현하며, PKCE 필수입니다.
-
-### 개발 / 테스트 (PAT)
-
-`dev`, `test` 프로파일에서는 PersonalAccessToken(PAT)으로 간편하게 인증할 수 있습니다. Claude Desktop으로 빠르게 연결해서 MCP 동작을 확인할 때 사용합니다.
+초기 구현은 PAT(PersonalAccessToken) 기반으로 진행합니다. Claude Desktop, Cursor 연동에 사용합니다.
 
 1. `POST /api/v1/tokens`로 PAT 발급
-2. Claude Desktop 설정에 PAT 등록
+2. LLM 클라이언트 설정에 PAT 등록
 3. MCP 요청 시 `Authorization: Bearer <pat>` 헤더로 전달
+
+### MVP 2차 — OAuth 2.1
+
+ChatGPT 연동을 위해 OAuth 2.1 Authorization Server를 추가합니다. Spring Authorization Server 기반으로 구현하며 PKCE 필수입니다. 1차 완료 후 별도 이슈로 진행합니다.
 
 ---
 
@@ -37,24 +35,88 @@ Spring Authorization Server 기반으로 구현하며, PKCE 필수입니다.
 
 ### Read Tools
 
-인증 없이 사용할 수 있는 툴과 인증이 필요한 툴을 분리합니다.
+#### `search_public_routines`
+게임명, 태그, 키워드로 공개 루틴을 검색합니다. 인증 불필요.
 
-| Tool | 설명 | 인증 |
-|---|---|---|
-| `search_public_routines` | 게임명, 태그, 키워드로 공개 루틴 검색 | 불필요 |
-| `get_public_routine_detail` | 공개 루틴 상세 및 아이템 목록 조회 | 불필요 |
-| `get_my_routine_deck_today` | 내 루틴덱에서 오늘 해야 할 아이템 조회 | 필요 |
-| `get_my_routine_deck_week` | 내 루틴덱에서 이번 주 해야 할 아이템 조회 | 필요 |
+```json
+// input
+{ "gameName": "로스트아크", "tags": ["복귀"], "query": "1주차 루틴", "cursor": null, "limit": 20 }
+
+// output
+{ "data": [{ "id": 1, "title": "복귀자 1주차 루틴", "gameName": "로스트아크", "slug": "loa-return-1w", "tags": ["복귀"] }], "nextCursor": "xxx", "hasNext": true }
+```
+
+#### `get_public_routine_detail`
+공개 루틴 상세 및 아이템 목록을 조회합니다. 인증 불필요.
+
+```json
+// input
+{ "slug": "loa-return-1w" }
+
+// output
+{ "id": 1, "title": "복귀자 1주차 루틴", "gameName": "로스트아크", "items": [{ "id": 10, "title": "카오스 던전 2회", "repeatType": "DAILY", "estimatedMinutes": 10 }] }
+```
+
+#### `get_my_routine_deck_today`
+내 루틴덱에서 오늘 해야 할 아이템을 조회합니다. 인증 필요.
+
+```json
+// input
+{}
+
+// output
+{ "date": "2026-06-16", "items": [{ "routineItemId": 10, "title": "카오스 던전 2회", "gameName": "로스트아크", "checked": false, "estimatedMinutes": 10 }] }
+```
+
+#### `get_my_routine_deck_week`
+내 루틴덱에서 이번 주 해야 할 아이템을 조회합니다. 인증 필요.
+
+```json
+// input
+{}
+
+// output
+{ "weekStart": "2026-06-16", "weekEnd": "2026-06-22", "items": [{ "routineItemId": 20, "title": "주간 레이드", "gameName": "로스트아크", "checked": false }] }
+```
+
+---
 
 ### Write Tools
 
 쓰기 작업은 사용자 확인 후 수행하는 것을 권장합니다.
 
-| Tool | 설명 | 인증 |
-|---|---|---|
-| `subscribe_routine` | 공개 루틴을 내 루틴덱에 구독 | 필요 |
-| `check_routine_item` | 루틴 아이템 완료 처리 | 필요 |
-| `uncheck_routine_item` | 루틴 아이템 완료 취소 | 필요 |
+#### `subscribe_routine`
+공개 루틴을 내 루틴덱에 구독합니다. 인증 필요.
+
+```json
+// input
+{ "routineId": 1 }
+
+// output
+{ "subscriptionId": 100, "routineId": 1, "title": "복귀자 1주차 루틴" }
+```
+
+#### `check_routine_item`
+루틴 아이템을 완료 처리합니다. 인증 필요.
+
+```json
+// input
+{ "routineItemId": 10 }
+
+// output
+{ "routineItemId": 10, "title": "카오스 던전 2회", "checkedAt": "2026-06-16" }
+```
+
+#### `uncheck_routine_item`
+루틴 아이템 완료를 취소합니다. 인증 필요.
+
+```json
+// input
+{ "routineItemId": 10 }
+
+// output
+{ "routineItemId": 10, "unchecked": true }
+```
 
 ---
 
@@ -91,13 +153,14 @@ MCP를 통해 허용하지 않는 작업 목록입니다.
 
 ## 클라이언트 연결 예시
 
-### ChatGPT
+### ChatGPT (연동 예정 — OAuth 2.1 구현 후 지원)
+
+ChatGPT MCP 연동은 OAuth 2.1이 필요합니다. MVP 2차에서 구현 예정입니다.
 
 1. ChatGPT 설정 → **앱** 이동
 2. 고급 설정에서 **개발자 모드** 활성화
 3. **앱 만들기**에서 MCP 서버 URL 입력
-   - MCP 서버 URL: `https://your-routinedeck-url/mcp`
-4. 채팅창에서 바로 사용 가능
+4. OAuth 인증 후 사용 가능
 
 ### Claude Desktop
 

@@ -30,6 +30,9 @@ public class Routine extends BaseEntity {
     private Integer dailyResetHour = 0;
 
     @Column(nullable = false)
+    private Integer weeklyResetDayOfWeek = 1;
+
+    @Column(nullable = false)
     private String title;
 
     private String description;
