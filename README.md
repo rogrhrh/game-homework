@@ -52,7 +52,8 @@ Claude, ChatGPT, Cursor 같은 LLM 클라이언트가 MCP를 통해 루틴덱에
 
 ### ChatGPT (연동 예정)
 
-ChatGPT MCP 연동은 OAuth 2.1 구현 완료 후 지원 예정입니다.
+ChatGPT 연동은 OAuth 2.1 구현 및 ChatGPT Apps SDK 배포 흐름 확인 후 지원 예정입니다.
+아래 단계는 목표 연동 흐름이며, 실제 메뉴명은 ChatGPT 정책에 따라 변경될 수 있습니다.
 
 1. ChatGPT 설정 → **앱** 이동
 2. 고급 설정에서 **개발자 모드** 활성화

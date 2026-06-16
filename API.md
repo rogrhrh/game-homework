@@ -7,12 +7,15 @@
 
 ## 인증
 
-| 환경 | 방식 | 비고 |
+| 단계 | 방식 | 비고 |
 |---|---|---|
-| prod | OAuth 2.1 | 웹 API, MCP 모두 OAuth 통일 |
-| dev / test | PAT | MCP 테스트 편의를 위해 PAT 허용 |
+| MVP 1차 웹 | JWT 또는 세션 로그인 | 기본 웹 API 인증 |
+| MVP 1차 MCP | PAT | Claude Desktop / Cursor 연동 테스트 |
+| MVP 2차 | OAuth 2.1 + PKCE | ChatGPT 연동 및 외부 배포 고도화 |
 
-웹 API는 OAuth 액세스 토큰을 `Authorization: Bearer <token>` 헤더로 전달합니다.
+웹 API는 로그인 후 발급된 인증 정보를 사용합니다.
+MCP 요청은 MVP 1차에서는 `Authorization: Bearer <pat>` 헤더로 PAT를 전달합니다.
+OAuth 2.1은 MVP 2차에서 별도 이슈로 구현합니다.
 
 ---
 

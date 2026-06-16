@@ -104,6 +104,9 @@ erDiagram
 
 **Unique 제약**: `(userId, routineId)`
 
+> MVP에서는 구독 취소 시 RoutineSubscription 레코드를 삭제한다.
+> 이후 구독 이력 보존이 필요하면 deletedAt을 추가한다.
+
 ---
 
 ### RoutineItemCheck
