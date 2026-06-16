@@ -58,6 +58,7 @@ erDiagram
 | gameId | Long | FK → Game |
 | authorId | Long | FK → User |
 | title | String | 루틴 제목 |
+| slug | String | 공유 링크용 식별자 (unique) |
 | description | String | 루틴 설명 (nullable) |
 | visibility | Visibility | PUBLIC / PRIVATE |
 | createdAt | LocalDateTime | |
