@@ -1,9 +1,14 @@
 package com.ahn.game_homework.domain.auth.service;
 
+import com.ahn.game_homework.domain.auth.dto.request.LoginRequest;
 import com.ahn.game_homework.domain.auth.dto.request.SignupRequest;
+import com.ahn.game_homework.domain.auth.dto.response.LoginResponse;
 import com.ahn.game_homework.domain.auth.dto.response.SignupResponse;
 import com.ahn.game_homework.domain.user.entity.User;
 import com.ahn.game_homework.domain.user.repository.UserRepository;
+import com.ahn.game_homework.global.error.BusinessException;
+import com.ahn.game_homework.global.error.ErrorCode;
+import com.ahn.game_homework.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,14 +25,30 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    // 비밀번호 BCrypt 인코딩 → User 생성 → DB 저장 → 응답 DTO 변환
     @Transactional
     public SignupResponse signup(SignupRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
+        }
+
         String encodedPassword = passwordEncoder.encode(request.password());
         User user = User.create(request.email(), encodedPassword, request.nickname());
         User savedUser = userRepository.save(user);
 
         return SignupResponse.from(savedUser);
+    }
+
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_CREDENTIALS));
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        String accessToken = jwtTokenProvider.createAccessToken(user.getId());
+        return LoginResponse.of(accessToken);
     }
 }

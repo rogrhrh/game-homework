@@ -1,6 +1,8 @@
 package com.ahn.game_homework.domain.auth.controller;
 
+import com.ahn.game_homework.domain.auth.dto.request.LoginRequest;
 import com.ahn.game_homework.domain.auth.dto.request.SignupRequest;
+import com.ahn.game_homework.domain.auth.dto.response.LoginResponse;
 import com.ahn.game_homework.domain.auth.dto.response.SignupResponse;
 import com.ahn.game_homework.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -20,13 +22,17 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // @Valid: SignupRequest의 @Email/@Size 등 Bean Validation 실행. 실패 시 400 자동 반환.
-    // ResponseEntity.status(201): REST 관례상 생성 성공은 200이 아닌 201 CREATED를 반환한다.
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(
             @Valid @RequestBody SignupRequest request
     ) {
-        SignupResponse response = authService.signup(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody LoginRequest request
+    ) {
+        return ResponseEntity.ok(authService.login(request));
     }
 }

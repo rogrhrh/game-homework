@@ -11,4 +11,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 메서드 이름 규칙으로 SQL 자동 생성: SELECT * FROM users WHERE email = ?
     // Optional로 반환해 null 가능성을 명시 → 호출자가 .orElseThrow()로 처리해야 함.
     Optional<User> findByEmail(String email);
+
+    // SELECT EXISTS(...) 쿼리 생성. 중복 이메일 체크용. findByEmail보다 가볍다.
+    boolean existsByEmail(String email);
 }
